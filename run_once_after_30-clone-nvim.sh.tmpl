@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+nvim_dir="$HOME/.config/nvim"
+nvim_repo="git@github.com:Seuqram78/nvim.git"
+
+if [ -d "$nvim_dir/.git" ]; then
+    exit 0
+fi
+
+if [ -e "$nvim_dir" ]; then
+    printf '%s\n' "$nvim_dir exists but is not a Git repository; refusing to overwrite it." >&2
+    exit 1
+fi
+
+mkdir -p "$HOME/.config"
+git clone "$nvim_repo" "$nvim_dir"
