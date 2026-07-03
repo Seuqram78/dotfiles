@@ -15,3 +15,12 @@ else
     printf '%s\n' 'mise is not available; package installation did not complete successfully.' >&2
     exit 1
 fi
+
+eval "$(mise activate bash)"
+
+if command -v npm >/dev/null 2>&1; then
+    xargs -r npm install -g <"{{ .chezmoi.sourceDir }}/packages/npm.txt"
+else
+    printf '%s\n' 'npm is not available after mise install; Node installation did not complete successfully.' >&2
+    exit 1
+fi
