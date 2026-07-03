@@ -16,5 +16,5 @@ chezmoi update
 The chezmoi source directory is:
 
 ```sh
-~/.local/share/chezmoi
+~/dotfiles
 ```
