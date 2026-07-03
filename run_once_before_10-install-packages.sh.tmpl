@@ -5,17 +5,17 @@ source_dir="{{ .chezmoi.sourceDir }}"
 
 load_brew() {
     if [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
-        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
     elif [ -x /opt/homebrew/bin/brew ]; then
-        eval "$(/opt/homebrew/bin/brew shellenv)"
+        eval "$(/opt/homebrew/bin/brew shellenv bash)"
     elif [ -x /usr/local/bin/brew ]; then
-        eval "$(/usr/local/bin/brew shellenv)"
+        eval "$(/usr/local/bin/brew shellenv bash)"
     fi
 }
 
 if command -v apt >/dev/null 2>&1; then
     sudo apt update
-    sudo apt install -y build-essential curl file git procps
+    sudo apt install -y build-essential bubblewrap curl file git procps
     xargs -r sudo apt install -y <"$source_dir/packages/apt.txt"
 fi
 
