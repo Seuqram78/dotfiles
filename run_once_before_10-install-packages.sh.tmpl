@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+source_dir="{{ .chezmoi.sourceDir }}"
+
+if command -v apt >/dev/null 2>&1; then
+    sudo apt update
+    xargs -r sudo apt install -y <"$source_dir/packages/apt.txt"
+fi
+
+if command -v brew >/dev/null 2>&1; then
+    brew bundle --file "$source_dir/Brewfile"
+fi
