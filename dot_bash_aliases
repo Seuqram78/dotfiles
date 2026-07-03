@@ -1,0 +1,2 @@
+alias ls='eza --level 1 --group-directories-first --icons -1 -a -l -h --time-style long-iso -o'
+alias lt='eza --tree --level=2 --icons --color=always --group-directories-first'
