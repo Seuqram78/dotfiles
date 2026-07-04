@@ -24,3 +24,13 @@ else
     printf '%s\n' 'npm is not available after mise install; Node installation did not complete successfully.' >&2
     exit 1
 fi
+
+if command -v uv >/dev/null 2>&1; then
+    while IFS= read -r package || [ -n "$package" ]; do
+        [ -n "$package" ] || continue
+        uv tool install "$package"
+    done <"{{ .chezmoi.sourceDir }}/packages/uv.txt"
+else
+    printf '%s\n' 'uv is not available; Homebrew package installation did not complete successfully.' >&2
+    exit 1
+fi
