@@ -17,6 +17,11 @@ if command -v apt >/dev/null 2>&1; then
     sudo apt update
     sudo apt install -y build-essential bubblewrap curl file git procps
     xargs -r sudo apt install -y <"$source_dir/packages/apt.txt"
+
+    if dpkg-query -W -f='${Status}' docker.io 2>/dev/null | grep -q 'install ok installed'; then
+        sudo systemctl enable --now docker
+        sudo usermod -aG docker "$USER"
+    fi
 fi
 
 load_brew
