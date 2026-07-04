@@ -4,8 +4,15 @@ set -euo pipefail
 bashrc="$HOME/.bashrc"
 touch "$bashrc"
 
-if ! grep -q 'chezmoi dotfiles shell setup' "$bashrc"; then
-    cat >>"$bashrc" <<'EOF'
+if grep -q '^# chezmoi dotfiles shell setup$' "$bashrc"; then
+    if grep -q '^# chezmoi dotfiles shell setup end$' "$bashrc"; then
+        sed -i '/^# chezmoi dotfiles shell setup$/,/^# chezmoi dotfiles shell setup end$/d' "$bashrc"
+    else
+        sed -i '/^# chezmoi dotfiles shell setup$/,$d' "$bashrc"
+    fi
+fi
+
+cat >>"$bashrc" <<'EOF'
 
 # chezmoi dotfiles shell setup
 if [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
@@ -16,6 +23,10 @@ elif [ -x /usr/local/bin/brew ]; then
     eval "$(/usr/local/bin/brew shellenv bash)"
 fi
 
+if command -v mise >/dev/null 2>&1; then
+    eval "$(mise activate bash)"
+fi
+
 if [ -f "$HOME/.bash_aliases" ]; then
     . "$HOME/.bash_aliases"
 fi
@@ -23,5 +34,5 @@ fi
 if [ -f "$HOME/.bash_functions" ]; then
     . "$HOME/.bash_functions"
 fi
+# chezmoi dotfiles shell setup end
 EOF
-fi
