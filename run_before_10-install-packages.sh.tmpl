@@ -35,4 +35,6 @@ if ! command -v brew >/dev/null 2>&1; then
     exit 1
 fi
 
+brew trust --tap kiki-ki/tap
+
 brew bundle --file "$source_dir/Brewfile"
