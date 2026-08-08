@@ -4,6 +4,19 @@ set -euo pipefail
 profiles="{{ .chezmoi.sourceDir }}/profiles"
 layers="$profiles/base $profiles/{{ .profile }}"
 
+for layer in $layers; do
+    if [ ! -d "$layer" ]; then
+{{- $known := list }}
+{{- range (glob (printf "%s/profiles/*" .chezmoi.sourceDir)) }}
+{{-   $known = append $known (base .) }}
+{{- end }}
+        printf '%s\n' "Profile directory $layer does not exist." >&2
+        printf '%s\n' "Known profiles: {{ join ", " (sortAlpha $known) }}" >&2
+        printf '%s\n' 'Fix the profile value in ~/.config/chezmoi/chezmoi.toml.' >&2
+        exit 1
+    fi
+done
+
 load_brew() {
     if [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
         eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
