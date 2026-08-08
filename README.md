@@ -12,9 +12,16 @@ chezmoi init
 chezmoi apply --verbose
 ```
 
-`chezmoi init` asks for the machine profile once and stores the answer in
-`~/.config/chezmoi/chezmoi.toml`. `chezmoi apply` installs everything and
-writes the dotfiles.
+`chezmoi init` asks for the machine profile once and writes it, along with the
+source directory it used, to `~/.config/chezmoi/chezmoi.toml`. `chezmoi apply`
+installs everything and writes the dotfiles.
+
+If the clone lives somewhere other than the default, pass it once at init and
+chezmoi records it — no flag needed on later commands:
+
+```sh
+chezmoi init --source /path/to/clone
+```
 
 The `export PATH` line is only needed for the first `chezmoi` run — after
 `apply`, the shell setup block in `~/.bashrc` puts `~/.local/bin` on `PATH`
