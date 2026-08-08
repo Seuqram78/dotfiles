@@ -21,6 +21,14 @@ if ! command -v newuidmap >/dev/null 2>&1; then
     exit 1
 fi
 
+if ! lsmod 2>/dev/null | grep -q '^nf_tables'; then
+    sudo modprobe nf_tables
+fi
+
+if [ ! -f /etc/modules-load.d/nf_tables.conf ]; then
+    printf '%s\n' 'nf_tables' | sudo tee /etc/modules-load.d/nf_tables.conf >/dev/null
+fi
+
 if ! grep -q "^$USER:" /etc/subuid 2>/dev/null; then
     sudo usermod --add-subuids 100000-165535 "$USER"
 fi
