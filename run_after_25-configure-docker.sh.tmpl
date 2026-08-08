@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
+elif [ -x /opt/homebrew/bin/brew ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv bash)"
+elif [ -x /usr/local/bin/brew ]; then
+    eval "$(/usr/local/bin/brew shellenv bash)"
+fi
+
+for helper in dockerd-rootless-setuptool.sh rootlesskit slirp4netns; do
+    if ! command -v "$helper" >/dev/null 2>&1; then
+        printf '%s\n' "$helper is not available; Homebrew package installation did not complete successfully." >&2
+        exit 1
+    fi
+done
+
+if ! command -v newuidmap >/dev/null 2>&1; then
+    printf '%s\n' 'newuidmap is not available; the uidmap package did not install successfully.' >&2
+    exit 1
+fi
+
+if ! grep -q "^$USER:" /etc/subuid 2>/dev/null; then
+    sudo usermod --add-subuids 100000-165535 "$USER"
+fi
+
+if ! grep -q "^$USER:" /etc/subgid 2>/dev/null; then
+    sudo usermod --add-subgids 100000-165535 "$USER"
+fi
+
+if ! systemctl --user show-environment >/dev/null 2>&1; then
+    printf '%s\n' 'No systemd user session available; skipping rootless Docker service setup.' >&2
+    exit 0
+fi
+
+if [ ! -f "$HOME/.config/systemd/user/docker.service" ]; then
+    dockerd-rootless-setuptool.sh install
+fi
+
+systemctl --user enable --now docker
+sudo loginctl enable-linger "$USER"
+
+docker context use rootless >/dev/null
