@@ -2,6 +2,7 @@
 set -euo pipefail
 
 source_dir="{{ .chezmoi.sourceDir }}"
+profile_dir="$source_dir/profiles/{{ .profile }}"
 
 load_brew() {
     if [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
@@ -20,6 +21,10 @@ if command -v apt >/dev/null 2>&1; then
     sudo apt update
     sudo apt install -y build-essential bubblewrap curl file git procps
     xargs -r sudo apt install -y <"$source_dir/packages/apt.txt"
+
+    if [ -f "$profile_dir/apt.txt" ]; then
+        xargs -r sudo apt install -y <"$profile_dir/apt.txt"
+    fi
 fi
 
 load_brew
@@ -38,3 +43,7 @@ fi
 brew trust --tap kiki-ki/tap
 
 brew bundle --file "$source_dir/Brewfile"
+
+if [ -f "$profile_dir/Brewfile" ]; then
+    brew bundle --file "$profile_dir/Brewfile"
+fi

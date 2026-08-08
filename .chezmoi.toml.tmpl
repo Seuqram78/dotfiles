@@ -1,1 +1,6 @@
+{{- $profile := promptStringOnce . "profile" "Machine profile (personal/work)" "personal" -}}
+
 umask = 0o022
+
+[data]
+    profile = {{ $profile | quote }}

@@ -9,6 +9,8 @@ elif [ -x /usr/local/bin/brew ]; then
     eval "$(/usr/local/bin/brew shellenv bash)"
 fi
 
+profile_dir="{{ .chezmoi.sourceDir }}/profiles/{{ .profile }}"
+
 if command -v mise >/dev/null 2>&1; then
     mise install
 else
@@ -20,16 +22,24 @@ eval "$(mise activate bash)"
 
 if command -v npm >/dev/null 2>&1; then
     xargs -r npm install -g <"{{ .chezmoi.sourceDir }}/packages/npm.txt"
+
+    if [ -f "$profile_dir/npm.txt" ]; then
+        xargs -r npm install -g <"$profile_dir/npm.txt"
+    fi
 else
     printf '%s\n' 'npm is not available after mise install; Node installation did not complete successfully.' >&2
     exit 1
 fi
 
 if command -v uv >/dev/null 2>&1; then
-    while IFS= read -r package || [ -n "$package" ]; do
-        [ -n "$package" ] || continue
-        uv tool install "$package"
-    done <"{{ .chezmoi.sourceDir }}/packages/uv.txt"
+    for uv_list in "{{ .chezmoi.sourceDir }}/packages/uv.txt" "$profile_dir/uv.txt"; do
+        [ -f "$uv_list" ] || continue
+
+        while IFS= read -r package || [ -n "$package" ]; do
+            [ -n "$package" ] || continue
+            uv tool install "$package"
+        done <"$uv_list"
+    done
 else
     printf '%s\n' 'uv is not available; Homebrew package installation did not complete successfully.' >&2
     exit 1

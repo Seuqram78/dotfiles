@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+{{ if eq .profile "personal" }}
+if command -v adguard-cli >/dev/null 2>&1; then
+    exit 0
+fi
+
+curl -fsSL https://raw.githubusercontent.com/AdguardTeam/AdGuardCLI/release/install.sh | sh -s -- -v
+
+printf '%s\n' 'AdGuard CLI installed. Run "adguard-cli activate" to enter your license, then "adguard-cli configure".'
+{{ else }}
+exit 0
+{{ end }}
