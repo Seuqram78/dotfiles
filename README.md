@@ -12,6 +12,12 @@ chezmoi init
 chezmoi apply --verbose
 ```
 
+Or as one line:
+
+```sh
+git clone https://github.com/Seuqram78/dotfiles.git ~/.local/share/chezmoi && sh -c "$(curl -fsLS https://get.chezmoi.io)" -- -b ~/.local/bin && export PATH="$HOME/.local/bin:$PATH" && chezmoi init && chezmoi apply --verbose
+```
+
 `chezmoi init` asks for the machine profile once and writes it, along with the
 source directory it used, to `~/.config/chezmoi/chezmoi.toml`. `chezmoi apply`
 installs everything and writes the dotfiles.
