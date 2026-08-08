@@ -39,5 +39,9 @@ fi
 if [ -f "$HOME/.bash_functions" ]; then
     . "$HOME/.bash_functions"
 fi
+
+if command -v starship >/dev/null 2>&1; then
+    eval "$(starship init bash)"
+fi
 # chezmoi dotfiles shell setup end
 EOF
