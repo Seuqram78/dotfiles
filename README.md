@@ -27,45 +27,30 @@ The `export PATH` line is only needed for the first `chezmoi` run — after
 `apply`, the shell setup block in `~/.bashrc` puts `~/.local/bin` on `PATH`
 permanently.
 
-## What gets installed
-
-| Source | Contents |
-| --- | --- |
-| `packages/apt.txt` | apt packages, plus the `git-core` PPA and build essentials |
-| `Brewfile` | Homebrew formulae and casks |
-| `packages/npm.txt` | global npm packages (via mise's Node) |
-| `packages/uv.txt` | uv tools |
-| `.chezmoi.toml.tmpl` | machine profile prompt |
-
-Scripts, in run order:
-
-| Script | Purpose |
-| --- | --- |
-| `run_before_10-install-packages` | apt, Homebrew, `brew bundle` |
-| `run_after_15-configure-shell` | managed block in `~/.bashrc` |
-| `run_after_20-mise-install` | mise runtimes, npm and uv packages |
-| `run_after_25-configure-docker` | rootless Docker (no sudo needed to run containers) |
-| `run_after_30-clone-nvim` | clones the Neovim config |
-| `run_after_40-install-adguard` | AdGuard CLI (personal profile only) |
-
 ## Profiles
 
-Everything above is the **base** — every machine gets it. A profile adds
-machine-specific extras on top.
+Packages live in `profiles/`. Every machine installs `base`, then the profile
+it was initialised with, layered on top.
 
 ```
 profiles/
-  personal/
+  base/           # every machine
+    apt.txt
+    Brewfile
+    npm.txt
+    uv.txt
+  personal/       # personal machines only
     Brewfile      # claude-code
 ```
 
-A profile directory may contain any of `Brewfile`, `apt.txt`, `npm.txt`,
+A profile directory may contain any of `apt.txt`, `Brewfile`, `npm.txt`,
 `uv.txt`. Missing files are skipped, so a profile only declares what it adds.
 Scripts can be gated on the profile too — see
 `run_after_40-install-adguard.sh.tmpl`.
 
 Current profiles:
 
+- **base** — apt packages, Homebrew formulae and casks, npm globals, uv tools
 - **personal** — AdGuard CLI, Claude Code
 
 ### Adding to a profile
@@ -76,6 +61,19 @@ on the machines that use it. Other machines pull the same commit and skip it.
 ### Changing a machine's profile
 
 Edit `profile` in `~/.config/chezmoi/chezmoi.toml` and re-run `chezmoi apply`.
+
+## Scripts
+
+In run order:
+
+| Script | Purpose |
+| --- | --- |
+| `run_before_10-install-packages` | apt, Homebrew, `brew bundle` |
+| `run_after_15-configure-shell` | managed block in `~/.bashrc` |
+| `run_after_20-mise-install` | mise runtimes, npm and uv packages |
+| `run_after_25-configure-docker` | rootless Docker (no sudo needed to run containers) |
+| `run_after_30-clone-nvim` | clones the Neovim config |
+| `run_after_40-install-adguard` | AdGuard CLI (personal profile only) |
 
 ## Day to day
 

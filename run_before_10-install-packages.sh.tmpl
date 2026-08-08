@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-source_dir="{{ .chezmoi.sourceDir }}"
-profile_dir="$source_dir/profiles/{{ .profile }}"
+profiles="{{ .chezmoi.sourceDir }}/profiles"
+layers="$profiles/base $profiles/{{ .profile }}"
 
 load_brew() {
     if [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
@@ -20,11 +20,11 @@ if command -v apt >/dev/null 2>&1; then
     sudo add-apt-repository -y ppa:git-core/ppa
     sudo apt update
     sudo apt install -y build-essential bubblewrap curl file git procps
-    xargs -r sudo apt install -y <"$source_dir/packages/apt.txt"
 
-    if [ -f "$profile_dir/apt.txt" ]; then
-        xargs -r sudo apt install -y <"$profile_dir/apt.txt"
-    fi
+    for layer in $layers; do
+        [ -f "$layer/apt.txt" ] || continue
+        xargs -r sudo apt install -y <"$layer/apt.txt"
+    done
 fi
 
 load_brew
@@ -42,8 +42,7 @@ fi
 
 brew trust --tap kiki-ki/tap
 
-brew bundle --file "$source_dir/Brewfile"
-
-if [ -f "$profile_dir/Brewfile" ]; then
-    brew bundle --file "$profile_dir/Brewfile"
-fi
+for layer in $layers; do
+    [ -f "$layer/Brewfile" ] || continue
+    brew bundle --file "$layer/Brewfile"
+done
