@@ -2,7 +2,7 @@
 set -euo pipefail
 
 profiles="{{ .chezmoi.sourceDir }}/profiles"
-layers="$profiles/base $profiles/{{ .profile }}"
+layers="$profiles/base{{ if ne .profile "base" }} $profiles/{{ .profile }}{{ end }}"
 
 for layer in $layers; do
     if [ ! -d "$layer" ]; then

@@ -51,7 +51,12 @@ Scripts can be gated on the profile too — see
 Current profiles:
 
 - **base** — apt packages, Homebrew formulae and casks, npm globals, uv tools
-- **personal** — AdGuard CLI, Claude Code
+- **personal** — base plus AdGuard CLI and Claude Code
+
+`base` is selectable at the prompt and means "no machine-specific extras"; it
+is not layered onto itself. `chezmoi init` only offers names that exist under
+`profiles/`, and `run_before_10` aborts before touching apt if the configured
+profile has no directory.
 
 ### Adding to a profile
 

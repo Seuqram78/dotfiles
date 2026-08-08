@@ -1,16 +1,13 @@
-{{- /* Valid profiles are the directories under profiles/, except base, which
-       every machine gets. Adding a directory adds a choice. */ -}}
+{{- /* Valid profiles are the directories under profiles/. Choosing base means
+       no machine-specific extras. Adding a directory adds a choice. */ -}}
 {{- $choices := list -}}
 {{- range (glob (printf "%s/profiles/*" .chezmoi.sourceDir)) -}}
-{{-   $name := base . -}}
-{{-   if ne $name "base" -}}
-{{-     $choices = append $choices $name -}}
-{{-   end -}}
+{{-   $choices = append $choices (base .) -}}
 {{- end -}}
 {{- $choices = sortAlpha $choices -}}
 {{- $default := "personal" -}}
 {{- if not (has $default $choices) -}}
-{{-   $default = first $choices -}}
+{{-   $default = "base" -}}
 {{- end -}}
 {{- $profile := promptChoiceOnce . "profile" "Machine profile" $choices $default -}}
 
