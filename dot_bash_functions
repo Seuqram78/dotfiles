@@ -1,3 +1,18 @@
+_qalc_prep() {
+    if [[ "$READLINE_LINE" == =* ]]; then
+        local expr="${READLINE_LINE#=}"
+        expr="${expr#"${expr%%[![:space:]]*}"}"
+        expr="${expr//\'/\'\\\'\'}"
+        READLINE_LINE="qalc -t '$expr'"
+        READLINE_POINT=${#READLINE_LINE}
+    fi
+}
+
+if [[ $- == *i* ]]; then
+    bind -x '"\C-x\C-a": _qalc_prep'
+    bind '"\C-m": "\C-x\C-a\C-j"'
+fi
+
 upal() {
     local apt_cmd=(apt)
     local brew_cmd=(env HOMEBREW_NO_ASK=1 brew)
