@@ -15,6 +15,8 @@ fi
 cat >>"$bashrc" <<'EOF'
 
 # chezmoi dotfiles shell setup
+export EDITOR=nvim
+
 if [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
 elif [ -x /opt/homebrew/bin/brew ]; then
