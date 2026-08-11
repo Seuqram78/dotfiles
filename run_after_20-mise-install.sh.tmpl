@@ -44,3 +44,17 @@ else
     printf '%s\n' 'uv is not available; Homebrew package installation did not complete successfully.' >&2
     exit 1
 fi
+
+if command -v cargo >/dev/null 2>&1; then
+    for layer in $layers; do
+        [ -f "$layer/cargo.txt" ] || continue
+
+        while IFS= read -r package || [ -n "$package" ]; do
+            [ -n "$package" ] || continue
+            cargo install "$package"
+        done <"$layer/cargo.txt"
+    done
+else
+    printf '%s\n' 'cargo is not available after mise install; Rust installation did not complete successfully.' >&2
+    exit 1
+fi

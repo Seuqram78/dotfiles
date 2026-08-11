@@ -84,5 +84,12 @@ upal() {
         _upal_skip 'npm global packages; npm was not found'
     fi
 
+    if command -v cargo-install-update >/dev/null 2>&1; then
+        _upal_step 'Updating cargo-installed binaries'
+        cargo install-update -a || return
+    else
+        _upal_skip 'cargo-installed binaries; cargo-update was not found'
+    fi
+
     printf '\033[1;32m%s\033[0m\n' '==> Laptop upgrade complete'
 }
