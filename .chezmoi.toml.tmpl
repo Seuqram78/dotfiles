@@ -5,9 +5,9 @@
 {{-   $choices = append $choices (base .) -}}
 {{- end -}}
 {{- $choices = sortAlpha $choices -}}
-{{- $default := "personal" -}}
+{{- $default := "1-personal" -}}
 {{- if not (has $default $choices) -}}
-{{-   $default = "base" -}}
+{{-   $default = "0-base" -}}
 {{- end -}}
 {{- $profile := promptChoiceOnce . "profile" "Machine profile" $choices $default -}}
 

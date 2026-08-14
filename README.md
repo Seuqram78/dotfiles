@@ -35,17 +35,17 @@ permanently.
 
 ## Profiles
 
-Packages live in `profiles/`. Every machine installs `base`, then the profile
+Packages live in `profiles/`. Every machine installs `0-base`, then the profile
 it was initialised with, layered on top.
 
 ```
 profiles/
-  base/           # every machine
+  0-base/           # every machine
     apt.txt
     Brewfile
     npm.txt
     uv.txt
-  personal/       # personal machines only
+  1-personal/       # personal machines only
     Brewfile      # claude-code
 ```
 
@@ -56,10 +56,10 @@ Scripts can be gated on the profile too — see
 
 Current profiles:
 
-- **base** — apt packages, Homebrew formulae and casks, npm globals, uv tools
-- **personal** — base plus AdGuard CLI and Claude Code
+- **0-base** — apt packages, Homebrew formulae and casks, npm globals, uv tools
+- **1-personal** — base plus AdGuard CLI and Claude Code
 
-`base` is selectable at the prompt and means "no machine-specific extras"; it
+`0-base` is selectable at the prompt and means "no machine-specific extras"; it
 is not layered onto itself. `chezmoi init` only offers names that exist under
 `profiles/`, and `run_before_10` aborts before touching apt if the configured
 profile has no directory.
