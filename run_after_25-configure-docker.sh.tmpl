@@ -73,4 +73,12 @@ fi
 systemctl --user enable --now docker
 sudo loginctl enable-linger "$USER"
 
+runtime_dir="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+if ! docker context inspect rootless >/dev/null 2>&1; then
+    # A previous partial setup may have installed the service without creating
+    # the client context (or left a broken context metadata entry behind).
+    docker context rm --force rootless >/dev/null 2>&1 || true
+    docker context create rootless --docker "host=unix://${runtime_dir}/docker.sock" >/dev/null
+fi
+
 docker context use rootless >/dev/null
