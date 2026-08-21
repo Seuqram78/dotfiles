@@ -91,5 +91,14 @@ upal() {
         _upal_skip 'cargo-installed binaries; cargo-update was not found'
     fi
 
+{{ if eq .profile "2-work1" }}
+    if command -v kiro-cli >/dev/null 2>&1; then
+        _upal_step 'Updating Kiro CLI'
+        kiro-cli update --non-interactive || return
+    else
+        _upal_skip 'Kiro CLI; kiro-cli was not found'
+    fi
+{{ end }}
+
     printf '\033[1;32m%s\033[0m\n' '==> Laptop upgrade complete'
 }
