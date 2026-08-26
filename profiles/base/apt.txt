@@ -1,3 +1,4 @@
+shellcheck
 uidmap
 xclip
 zip
