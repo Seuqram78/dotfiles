@@ -1,0 +1,4 @@
+brew "acli"
+brew "duckdb"
+brew "glab"
+brew "newrelic-cli"

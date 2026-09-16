@@ -1,0 +1,5 @@
+azure-cli
+git-lfs
+pandoc
+unzip
+wget

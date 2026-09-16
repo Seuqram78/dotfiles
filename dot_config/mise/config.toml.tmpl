@@ -1,0 +1,7 @@
+[tools]
+node = "lts"
+python = "latest"
+rust = "latest"
+{{ if eq .profile "2-work1" -}}
+dotnet = "10"
+{{ end -}}
