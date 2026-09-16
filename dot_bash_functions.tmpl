@@ -84,6 +84,15 @@ upal() {
         _upal_skip 'npm global packages; npm was not found'
     fi
 
+{{ if eq .profile "2-work1" }}
+    if command -v decktape >/dev/null 2>&1; then
+        _upal_step 'Aligning decktape Chrome with its pinned Puppeteer version'
+        "$(npm root -g)/decktape/node_modules/.bin/puppeteer" browsers install chrome || return
+    else
+        _upal_skip 'decktape Chrome; decktape was not found'
+    fi
+{{ end }}
+
     if command -v cargo-install-update >/dev/null 2>&1; then
         _upal_step 'Updating cargo-installed binaries'
         cargo install-update -a || return

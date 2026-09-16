@@ -31,6 +31,12 @@ else
     exit 1
 fi
 
+{{ if eq .profile "2-work1" }}
+if command -v decktape >/dev/null 2>&1; then
+    "$(npm root -g)/decktape/node_modules/.bin/puppeteer" browsers install chrome
+fi
+{{ end }}
+
 if command -v uv >/dev/null 2>&1; then
     for layer in $layers; do
         [ -f "$layer/uv.txt" ] || continue
