@@ -1,2 +1,3 @@
 alias ls='eza --level 1 --group-directories-first --icons -1 -a -l -h --time-style long-iso -o'
 alias lt='eza --tree --level=2 --icons --color=always --group-directories-first'
+alias kiro-meter='uvx --from git+https://github.com/Seuqram78/kiro-meter kiro-meter'
