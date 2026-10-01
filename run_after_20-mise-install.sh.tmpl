@@ -22,6 +22,10 @@ fi
 eval "$(mise activate bash)"
 
 if command -v npm >/dev/null 2>&1; then
+    # Upgrade the npm bundled with Node first so global installs use the same
+    # npm (and the same allow-scripts behaviour from ~/.npmrc) as upal.
+    npm install -g npm
+
     for layer in $layers; do
         [ -f "$layer/npm.txt" ] || continue
         xargs -r npm install -g <"$layer/npm.txt"
