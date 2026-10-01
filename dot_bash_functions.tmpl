@@ -70,6 +70,10 @@ upal() {
     if command -v mise >/dev/null 2>&1; then
         _upal_step 'Upgrading mise-managed tools'
         mise upgrade || return
+
+        # Refresh PATH now so the steps below use the upgraded tools (e.g. a
+        # new Node LTS) instead of waiting for the next prompt.
+        eval "$(mise hook-env -s bash)"
     else
         _upal_skip 'mise; mise was not found'
     fi
@@ -77,6 +81,24 @@ upal() {
     if command -v npm >/dev/null 2>&1; then
         _upal_step 'Updating npm itself'
         npm install -g npm || return
+
+        # Global packages live per Node install, so a Node upgrade drops them.
+        # Reinstall anything from the profile npm.txt files that is missing.
+        local npm_root layer pkg
+        local npm_missing=()
+        npm_root="$(npm root -g)" || return
+        for layer in "{{ .chezmoi.sourceDir }}/profiles/0-base"{{ if ne .profile "0-base" }} "{{ .chezmoi.sourceDir }}/profiles/{{ .profile }}"{{ end }}; do
+            [ -f "$layer/npm.txt" ] || continue
+            while IFS= read -r pkg || [ -n "$pkg" ]; do
+                [ -n "$pkg" ] || continue
+                [ -d "$npm_root/$pkg" ] || npm_missing+=("$pkg")
+            done <"$layer/npm.txt"
+        done
+
+        if [ "${#npm_missing[@]}" -gt 0 ]; then
+            _upal_step "Installing missing npm packages: ${npm_missing[*]}"
+            npm install -g "${npm_missing[@]}" || return
+        fi
 
         _upal_step 'Updating globally installed npm packages'
         npm update -g || return
