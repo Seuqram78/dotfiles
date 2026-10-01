@@ -19,13 +19,10 @@ export EDITOR=nvim
 
 if [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
-    export LD_LIBRARY_PATH="/home/linuxbrew/.linuxbrew/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 elif [ -x /opt/homebrew/bin/brew ]; then
     eval "$(/opt/homebrew/bin/brew shellenv bash)"
-    export LD_LIBRARY_PATH="/opt/homebrew/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 elif [ -x /usr/local/bin/brew ]; then
     eval "$(/usr/local/bin/brew shellenv bash)"
-    export LD_LIBRARY_PATH="/usr/local/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 fi
 
 if command -v mise >/dev/null 2>&1; then
